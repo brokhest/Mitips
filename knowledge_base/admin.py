@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import CarType, CharAttribute, IntAttribute, BoolAttribute, StCharAttribute, StIntAttribute, StBoolAttribute
+from .models import CarType, CharAttribute, IntAttribute, BoolAttribute,\
+    StCharAttribute, StIntAttribute, StBoolAttribute
 
 # Register your models here.
 admin.site.register(CarType)

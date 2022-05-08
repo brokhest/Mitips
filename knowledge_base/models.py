@@ -11,6 +11,13 @@ class CarType(models.Model):
 
 
 class Attribute(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+
+class StAttribute(models.Model):
     name = models.CharField(max_length=30, unique=True)
 
     def __str__(self):
@@ -18,29 +25,29 @@ class Attribute(models.Model):
 
 
 class IntAttribute(Attribute):
-    low_value = models.IntegerField()
-    high_value = models.IntegerField()
+    low_value = models.IntegerField(null=True)
+    high_value = models.IntegerField(null=True)
     car_type = models.ForeignKey(CarType, related_name="int_attrs", on_delete=models.CASCADE)
 
 
 class CharAttribute(Attribute):
-    values = models.CharField(max_length=200)
+    values = models.CharField(max_length=200, null=True)
     car_type = models.ForeignKey(CarType, related_name="char_attrs", on_delete=models.CASCADE)
 
 
 class BoolAttribute(Attribute):
-    value = models.CharField(max_length=10)
+    value = models.CharField(max_length=10, null=True)
     car_type = models.ForeignKey(CarType, related_name="bool_attrs", on_delete=models.CASCADE)
 
 
-class StIntAttribute(Attribute):
-    low_value = models.IntegerField()
-    high_value = models.IntegerField()
+class StIntAttribute(StAttribute):
+    low_value = models.IntegerField(null=True)
+    high_value = models.IntegerField(null=True)
 
 
-class StCharAttribute(Attribute):
-    values = models.CharField(max_length=200)
+class StCharAttribute(StAttribute):
+    values = models.CharField(max_length=200, null=True)
 
 
-class StBoolAttribute(Attribute):
-    value = models.CharField(max_length=10)
+class StBoolAttribute(StAttribute):
+    value = models.CharField(max_length=10, null=True)
