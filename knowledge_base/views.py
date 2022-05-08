@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from .models import CarType, CharAtribute, IntAtribute, BoolAtribute
+from .models import CarType, CharAttribute, IntAttribute, BoolAttribute
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 
@@ -52,23 +52,23 @@ class AttributeAPI(APIView):
     def get(request):
         car_type = get_object_or_404(CarType.objects.all(), name=request.data.get("car type"))
         data = []
-        for atr in car_type.int_atrs.all():
+        for atr in car_type.int_attrs.all():
             record = {
                 "name": atr.name,
                 "low value": atr.low_value,
                 "high_value": atr.high_value
             }
             data.append(record)
-        for atr in car_type.char_atrs.all():
+        for atr in car_type.char_attrs.all():
             record = {
                 "name": atr.name,
                 "values": atr.values,
             }
             data.append(record)
-        for atr in car_type.bool_atrs.all():
+        for atr in car_type.bool_attrs.all():
             record = {
                 "name": atr.name,
-                "value": atr.value,
+                "values": atr.value,
             }
             data.append(record)
         return JsonResponse(data, safe=False)
