@@ -1,5 +1,5 @@
-from .models import StCharAttribute, StBoolAttribute, StIntAttribute,\
-    IntAttribute, CharAttribute, BoolAttribute, CarType
+from .models import StCharAttribute, StBoolAttribute, StFloatAttribute,\
+    FloatAttribute, CharAttribute, BoolAttribute, CarType
 
 
 def check(st_attribute, attribute, type):
@@ -24,7 +24,7 @@ def check(st_attribute, attribute, type):
 
 def change_name(st_attribute, type, new_name):
     if type == "int":
-        for attribute in IntAttribute.objects.filter(name=st_attribute.name):
+        for attribute in FloatAttribute.objects.filter(name=st_attribute.name):
             attribute.name = new_name
             attribute.save()
     elif type == "char":
@@ -38,7 +38,7 @@ def change_name(st_attribute, type, new_name):
 
 
 def change_int(st_attribute, low_value, high_value):
-    for attribute in IntAttribute.objects.filter(name=st_attribute.name):
+    for attribute in FloatAttribute.objects.filter(name=st_attribute.name):
         if attribute.low_value < low_value:
             attribute.low_value = low_value
         if attribute.high_value > high_value:

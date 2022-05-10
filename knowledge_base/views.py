@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from .models import CarType, CharAttribute, IntAttribute, BoolAttribute,\
-    StBoolAttribute, StCharAttribute, StIntAttribute
+from .models import CarType, CharAttribute, FloatAttribute, BoolAttribute,\
+    StBoolAttribute, StCharAttribute, StFloatAttribute
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from .check import *
@@ -52,7 +52,7 @@ class StAttributeAPI(APIView):
     @staticmethod
     def get(request):
         data = []
-        for atr in StIntAttribute.objects.all():
+        for atr in StFloatAttribute.objects.all():
             record = {
                 "name": atr.name,
                 "type": "int",
@@ -80,8 +80,8 @@ class StAttributeAPI(APIView):
     def post(request):
         type = request.data.get("attr type")
         if type == "int":
-            attribute = StIntAttribute(name=request.data.get("name"), low_value=int(request.data.get("low value")),
-                                       high_value=int(request.data.get("high value")))
+            attribute = StFloatAttribute(name=request.data.get("name"), low_value=int(request.data.get("low value")),
+                                         high_value=int(request.data.get("high value")))
         elif type == "char":
             attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values")+",")
         elif type == "bool":
@@ -95,7 +95,7 @@ class StAttributeAPI(APIView):
     def put(request, name):
         type = request.data.get("attr type")
         if type == "int":
-            attribute = get_object_or_404(StIntAttribute.objects.all(), name=name)
+            attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
             change_name(attribute, type, request.data.get("name"))
             attribute.name = request.data.get("name")
             change_int(attribute, request.data.get("low value"), request.data.get("high value"))
@@ -122,7 +122,7 @@ class StAttributeAPI(APIView):
     def delete(request, name):
         type = request.data.get("attr type")
         if type == "int":
-            attribute = get_object_or_404(StIntAttribute.objects.all(), name=name)
+            attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
         elif type == "char":
             attribute = get_object_or_404(StCharAttribute.objects.all(), name=name)
         elif type == "bool":
@@ -168,9 +168,9 @@ class AttributeAPI(APIView):
         car_type = get_object_or_404(CarType.objects.all(), name=request.data.get("car type"))
         type = request.data.get("attr type")
         if type == "int":
-            attribute = IntAttribute(name=request.data.get("name"), low_value=request.data.get("low value"),
-                                     high_value=request.data.get("high value"), car_type=car_type)
-            result = check(get_object_or_404(StIntAttribute.objects.all(), name=request.data.get("name")),
+            attribute = FloatAttribute(name=request.data.get("name"), low_value=request.data.get("low value"),
+                                       high_value=request.data.get("high value"), car_type=car_type)
+            result = check(get_object_or_404(StFloatAttribute.objects.all(), name=request.data.get("name")),
                            attribute, "int")
         elif type == "char":
             attribute = CharAttribute(name=request.data.get("name"), values=request.data.get("values") + ", ", car_type=car_type)
@@ -196,7 +196,7 @@ class AttributeAPI(APIView):
             attribute = get_object_or_404(car_type.int_attrs.all(), name=name)
             attribute.low_value = request.data.get("low value")
             attribute.high_value = request.data.get("high value")
-            result = check(get_object_or_404(StIntAttribute.objects.all(), name=name),
+            result = check(get_object_or_404(StFloatAttribute.objects.all(), name=name),
                            attribute, "int")
         elif type == "char":
             attribute = get_object_or_404(car_type.char_attrs.all(), name=name)

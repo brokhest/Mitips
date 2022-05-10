@@ -24,9 +24,9 @@ class StAttribute(models.Model):
         return self.name
 
 
-class IntAttribute(Attribute):
-    low_value = models.IntegerField(null=True)
-    high_value = models.IntegerField(null=True)
+class FloatAttribute(Attribute):
+    low_value = models.FloatField(null=True)
+    high_value = models.FloatField(null=True)
     car_type = models.ForeignKey(CarType, related_name="int_attrs", on_delete=models.CASCADE)
 
 
@@ -40,9 +40,9 @@ class BoolAttribute(Attribute):
     car_type = models.ForeignKey(CarType, related_name="bool_attrs", on_delete=models.CASCADE)
 
 
-class StIntAttribute(StAttribute):
-    low_value = models.IntegerField(null=True)
-    high_value = models.IntegerField(null=True)
+class StFloatAttribute(StAttribute):
+    low_value = models.FloatField(null=True)
+    high_value = models.FloatField(null=True)
 
 
 class StCharAttribute(StAttribute):
