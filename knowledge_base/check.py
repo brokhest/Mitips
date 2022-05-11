@@ -3,7 +3,7 @@ from .models import StCharAttribute, StBoolAttribute, StFloatAttribute,\
 
 
 def check(st_attribute, attribute, type):
-    if type == "int":
+    if type == "float":
         return 1 if (st_attribute.low_value <= attribute.low_value <= st_attribute.high_value) and \
                     (st_attribute.low_value <= attribute.high_value <= st_attribute.high_value) else 0
     elif type == "char":
@@ -23,7 +23,7 @@ def check(st_attribute, attribute, type):
 
 
 def change_name(st_attribute, type, new_name):
-    if type == "int":
+    if type == "float":
         for attribute in FloatAttribute.objects.filter(name=st_attribute.name):
             attribute.name = new_name
             attribute.save()
@@ -37,7 +37,7 @@ def change_name(st_attribute, type, new_name):
             attribute.save()
 
 
-def change_int(st_attribute, low_value, high_value):
+def change_float(st_attribute, low_value, high_value):
     for attribute in FloatAttribute.objects.filter(name=st_attribute.name):
         if attribute.low_value < low_value:
             attribute.low_value = low_value

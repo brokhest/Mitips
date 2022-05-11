@@ -27,7 +27,7 @@ class StAttribute(models.Model):
 class FloatAttribute(Attribute):
     low_value = models.FloatField(null=True)
     high_value = models.FloatField(null=True)
-    car_type = models.ForeignKey(CarType, related_name="int_attrs", on_delete=models.CASCADE)
+    car_type = models.ForeignKey(CarType, related_name="float_attrs", on_delete=models.CASCADE)
 
 
 class CharAttribute(Attribute):

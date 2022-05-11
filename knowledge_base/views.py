@@ -55,7 +55,7 @@ class StAttributeAPI(APIView):
         for atr in StFloatAttribute.objects.all():
             record = {
                 "name": atr.name,
-                "type": "int",
+                "type": "float",
                 "low value": atr.low_value,
                 "high_value": atr.high_value
             }
@@ -79,9 +79,9 @@ class StAttributeAPI(APIView):
     @staticmethod
     def post(request):
         type = request.data.get("attr type")
-        if type == "int":
-            attribute = StFloatAttribute(name=request.data.get("name"), low_value=int(request.data.get("low value")),
-                                         high_value=int(request.data.get("high value")))
+        if type == "float":
+            attribute = StFloatAttribute(name=request.data.get("name"), low_value=float(request.data.get("low value")),
+                                         high_value=float(request.data.get("high value")))
         elif type == "char":
             attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values")+",")
         elif type == "bool":
@@ -94,11 +94,11 @@ class StAttributeAPI(APIView):
     @staticmethod
     def put(request, name):
         type = request.data.get("attr type")
-        if type == "int":
+        if type == "float":
             attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
             change_name(attribute, type, request.data.get("name"))
             attribute.name = request.data.get("name")
-            change_int(attribute, request.data.get("low value"), request.data.get("high value"))
+            change_float(attribute, request.data.get("low value"), request.data.get("high value"))
             attribute.low_value = request.data.get("low value")
             attribute.high_value = request.data.get("high value")
         elif type == "char":
@@ -121,7 +121,7 @@ class StAttributeAPI(APIView):
     @staticmethod
     def delete(request, name):
         type = request.data.get("attr type")
-        if type == "int":
+        if type == "float":
             attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
         elif type == "char":
             attribute = get_object_or_404(StCharAttribute.objects.all(), name=name)
@@ -139,10 +139,10 @@ class AttributeAPI(APIView):
     def get(request):
         car_type = get_object_or_404(CarType.objects.all(), name=request.data.get("car type"))
         data = []
-        for atr in car_type.int_attrs.all():
+        for atr in car_type.float_attrs.all():
             record = {
                 "name": atr.name,
-                "type": "int",
+                "type": "float",
                 "low value": atr.low_value,
                 "high_value": atr.high_value
             }
@@ -167,11 +167,11 @@ class AttributeAPI(APIView):
     def post(request):
         car_type = get_object_or_404(CarType.objects.all(), name=request.data.get("car type"))
         type = request.data.get("attr type")
-        if type == "int":
+        if type == "float":
             attribute = FloatAttribute(name=request.data.get("name"), low_value=request.data.get("low value"),
                                        high_value=request.data.get("high value"), car_type=car_type)
             result = check(get_object_or_404(StFloatAttribute.objects.all(), name=request.data.get("name")),
-                           attribute, "int")
+                           attribute, "float")
         elif type == "char":
             attribute = CharAttribute(name=request.data.get("name"), values=request.data.get("values") + ", ", car_type=car_type)
             result = check(get_object_or_404(StCharAttribute.objects.all(), name=request.data.get("name")),
@@ -192,12 +192,12 @@ class AttributeAPI(APIView):
     def put(request, name):
         car_type = get_object_or_404(CarType.objects.all(), name=request.data.get("car type"))
         type = request.data.get("attr type")
-        if type == "int":
-            attribute = get_object_or_404(car_type.int_attrs.all(), name=name)
+        if type == "float":
+            attribute = get_object_or_404(car_type.float_attrs.all(), name=name)
             attribute.low_value = request.data.get("low value")
             attribute.high_value = request.data.get("high value")
             result = check(get_object_or_404(StFloatAttribute.objects.all(), name=name),
-                           attribute, "int")
+                           attribute, "float")
         elif type == "char":
             attribute = get_object_or_404(car_type.char_attrs.all(), name=name)
             attribute.values = request.data.get("values") + ", "
@@ -220,8 +220,8 @@ class AttributeAPI(APIView):
     def delete(request, name):
         car_type = get_object_or_404(CarType.objects.all(), name=request.data.get("car type"))
         type = request.data.get("attr type")
-        if type == "int":
-            attribute = get_object_or_404(car_type.int_attrs.all(), name=name)
+        if type == "float":
+            attribute = get_object_or_404(car_type.float_attrs.all(), name=name)
         elif type == "char":
             attribute = get_object_or_404(car_type.char_attrs.all(), name=name)
         elif type == "bool":
