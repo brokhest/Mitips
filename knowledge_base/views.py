@@ -21,13 +21,13 @@ class Integrity(APIView):
     def get(request):
         data = []
         for attr in StBoolAttribute.objects.all():
-            if attr.value == ", ":
+            if attr.value == ", " or attr.value == "":
                 record = {
                     "attribute": attr.name
                 }
                 data.append(record)
         for attr in StCharAttribute.objects.all():
-            if attr.values == ",":
+            if attr.values == "," or attr.values == "":
                 record = {
                     "attribute": attr.name
                 }
@@ -53,14 +53,14 @@ class Integrity(APIView):
                         }
                         data.append(record)
                 for attr in car.bool_attrs.all():
-                    if attr.value == ",":
+                    if attr.value == "," or attr.value == "":
                         record = {
                             "car type": car.name,
                             "attribute": attr.name
                         }
                         data.append(record)
                 for attr in car.char_attrs.all():
-                    if attr.values == ", ":
+                    if attr.values == ", " or attr.values == "":
                         record = {
                             "car type": car.name,
                             "attribute": attr.name
@@ -206,7 +206,8 @@ class AttributeAPI(APIView):
 
     @staticmethod
     def get(request):
-        car_type = get_object_or_404(CarType.objects.all(), name=request.data.get("car type"))
+        # GET - в запросе, data - в теле
+        car_type = get_object_or_404(CarType.objects.all(), name=request.GET.get("car type"))
         data = []
         for atr in car_type.float_attrs.all():
             record = {
