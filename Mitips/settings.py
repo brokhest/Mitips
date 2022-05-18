@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'knowledge_base.apps.KnowledgeBaseConfig'
+    'knowledge_base.apps.KnowledgeBaseConfig',
+    'entities.apps.EntitiesConfig'
 ]
 
 MIDDLEWARE = [

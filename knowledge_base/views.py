@@ -3,7 +3,7 @@ from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from .models import CarType, CharAttribute, FloatAttribute, BoolAttribute,\
-    StBoolAttribute, StCharAttribute, StFloatAttribute
+    StBoolAttribute, StCharAttribute, StFloatAttribute, StAttribute
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from .check import *
@@ -34,15 +34,15 @@ class CarTypeAPI(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
     @staticmethod
-    def put(request, pk):
-        car_type = get_object_or_404(CarType.objects.all(), pk=pk)
+    def put(request, name):
+        car_type = get_object_or_404(CarType.objects.all(), name=name)
         car_type.name = request.data.get("name")
         car_type.save()
         return Response(status=status.HTTP_200_OK)
 
     @staticmethod
-    def delete(request, pk):
-        car_type = get_object_or_404(CarType.objects.all(), pk=pk)
+    def delete(request, name):
+        car_type = get_object_or_404(CarType.objects.all(), name=name)
         car_type.delete()
         return Response(status=status.HTTP_200_OK)
 
@@ -85,7 +85,7 @@ class StAttributeAPI(APIView):
         elif type == "char":
             attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values")+",")
         elif type == "bool":
-            attribute = StBoolAttribute(name=request.data.get("name"), values=request.data.get("value")+", ")
+            attribute = StBoolAttribute(name=request.data.get("name"), value=request.data.get("value")+", ")
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         attribute.save()

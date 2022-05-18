@@ -4,7 +4,7 @@ from .views import CarTypeAPI, AttributeAPI, StAttributeAPI
 
 urlpatterns = [
     path('api/types/', CarTypeAPI.as_view()),
-    path('api/types/<int:pk>', CarTypeAPI.as_view()),
+    path('api/types/<str:name>', CarTypeAPI.as_view()),
     path('api/car_attributes/', AttributeAPI.as_view()),
     path('api/car_attributes/<str:name>', AttributeAPI.as_view()),
     path('api/attributes/', StAttributeAPI.as_view()),
