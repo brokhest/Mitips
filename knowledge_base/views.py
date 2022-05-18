@@ -152,26 +152,39 @@ class StAttributeAPI(APIView):
         type = request.data.get("attr type")
         if type == "float":
             attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
-            change_name(attribute, type, request.data.get("name"))
-            attribute.name = request.data.get("name")
-            change_float(attribute, request.data.get("low value"), request.data.get("high value"))
-            attribute.low_value = request.data.get("low value")
-            attribute.high_value = request.data.get("high value")
+            if "new type" in request.data:
+                change_type(attribute, request)
+                changed = True
+            else:
+                change_name(attribute, type, request.data.get("name"))
+                attribute.name = request.data.get("name")
+                change_float(attribute, request.data.get("low value"), request.data.get("high value"))
+                attribute.low_value = request.data.get("low value")
+                attribute.high_value = request.data.get("high value")
         elif type == "char":
             attribute = get_object_or_404(StCharAttribute.objects.all(), name=name)
-            change_name(attribute, type, request.data.get("name"))
-            attribute.name = request.data.get("name")
-            change_char(attribute, request.data.get("values")+",")
-            attribute.values = request.data.get("values") + ","
+            if "new type" in request.data:
+                change_type(attribute, request)
+                changed = True
+            else:
+                change_name(attribute, type, request.data.get("name"))
+                attribute.name = request.data.get("name")
+                change_char(attribute, request.data.get("values")+",")
+                attribute.values = request.data.get("values") + ","
         elif type == "bool":
             attribute = get_object_or_404(StBoolAttribute.objects.all(), name=name)
-            change_name(attribute, type, request.data.get("name"))
-            attribute.name = request.data.get("name")
-            change_bool(attribute, request.data.get("value")+",")
-            attribute.value = request.data.get("value") + ","
+            if "new type" in request.data:
+                change_type(attribute, request)
+                changed = True
+            else:
+                change_name(attribute, type, request.data.get("name"))
+                attribute.name = request.data.get("name")
+                change_bool(attribute, request.data.get("value")+",")
+                attribute.value = request.data.get("value") + ","
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        attribute.save()
+        if not changed:
+            attribute.save()
         return Response(status=status.HTTP_200_OK)
 
     @staticmethod

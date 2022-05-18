@@ -22,6 +22,64 @@ def check(st_attribute, attribute, type):
         return 1
 
 
+def change_type_car(type, new_type, name, new_name):
+    if type == "float":
+        if new_type == "char":
+            for attr in FloatAttribute.objects.filter(name=name):
+                car = attr.car_type
+                attr.delete()
+                car_attribute = CharAttribute(name=new_name, values="", car_type=car)
+                car_attribute.save()
+        elif new_type == "bool":
+            for attr in FloatAttribute.objects.filter(name=name):
+                car = attr.car_type
+                attr.delete()
+                car_attribute = BoolAttribute(name=new_name, value="", car_type=car)
+                car_attribute.save()
+    elif type == "char":
+        if new_type == "float":
+            for attr in CharAttribute.objects.filter(name=name):
+                car = attr.car_type
+                attr.delete()
+                car_attribute = FloatAttribute(name=new_name, low_value=0, high_value=0, car_type=car)
+                car_attribute.save()
+        elif new_type == "bool":
+            for attr in CharAttribute.objects.filter(name=name):
+                car = attr.car_type
+                attr.delete()
+                car_attribute = BoolAttribute(name=new_name, value="", car_type=car)
+                car_attribute.save()
+    elif type == "bool":
+        if new_type == "float":
+            for attr in BoolAttribute.objects.filter(name=name):
+                car = attr.car_type
+                attr.delete()
+                car_attribute = FloatAttribute(name=new_name, low_value=0, high_value=0, car_type=car)
+                car_attribute.save()
+        elif new_type == "char":
+            for attr in BoolAttribute.objects.filter(name=name):
+                car = attr.car_type
+                attr.delete()
+                car_attribute = CharAttribute(name=new_name, values="", car_type=car)
+                car_attribute.save()
+    return
+
+
+def change_type(st_attribute, request):
+    name = st_attribute.name
+    st_attribute.delete()
+    if request.data.get("new type") == "float":
+        attribute = StFloatAttribute(name=request.data.get("name"), low_value=float(request.data.get("low value")),
+                                     high_value=float(request.data.get("high value")))
+    elif request.data.get("new type") == "char":
+        attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values") + ",")
+    elif request.data.get("new type") == "bool":
+        attribute = StBoolAttribute(name=request.data.get("name"), value=request.data.get("value") + ", ")
+    attribute.save()
+    change_type_car(request.data.get("attr type"), request.data.get("new type"), name, attribute.name)
+    return
+
+
 def change_name(st_attribute, type, new_name):
     if type == "float":
         for attribute in FloatAttribute.objects.filter(name=st_attribute.name):
