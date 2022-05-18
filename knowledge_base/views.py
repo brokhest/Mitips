@@ -15,6 +15,62 @@ def add_int_atr(request):
     car_type = request.data.get("name")
 
 
+class Integrity(APIView):
+
+    @staticmethod
+    def get(request):
+        data = []
+        for attr in StBoolAttribute.objects.all():
+            if attr.value == ", ":
+                record = {
+                    "attribute": attr.name
+                }
+                data.append(record)
+        for attr in StCharAttribute.objects.all():
+            if attr.values == ",":
+                record = {
+                    "attribute": attr.name
+                }
+                data.append(record)
+        for attr in StFloatAttribute.objects.all():
+            if attr.low_value == attr.high_value == 0:
+                record = {
+                    "attribute": attr.name
+                }
+                data.append(record)
+        for car in CarType.objects.all():
+            if not (car.float_attrs.all().exists() + car.char_attrs.all().exists() + car.bool_attrs.all().exists()):
+                record = {
+                    "car type": car.name
+                }
+                data.append(record)
+            else:
+                for attr in car.float_attrs.all():
+                    if attr.low_value == attr.high_value == 0:
+                        record = {
+                            "car type": car.name,
+                            "attribute": attr.name
+                        }
+                        data.append(record)
+                for attr in car.bool_attrs.all():
+                    if attr.value == ",":
+                        record = {
+                            "car type": car.name,
+                            "attribute": attr.name
+                        }
+                        data.append(record)
+                for attr in car.char_attrs.all():
+                    if attr.values == ", ":
+                        record = {
+                            "car type": car.name,
+                            "attribute": attr.name
+                        }
+                        data.append(record)
+        if len(data) == 0:
+            return Response(status=status.HTTP_200_OK)
+        return JsonResponse(data, safe=False)
+
+
 class CarTypeAPI(APIView):
 
     @staticmethod
