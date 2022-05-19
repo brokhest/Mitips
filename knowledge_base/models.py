@@ -50,4 +50,4 @@ class StCharAttribute(StAttribute):
 
 
 class StBoolAttribute(StAttribute):
-    value = models.CharField(max_length=10, null=True, default="yes, no")
+    value = models.CharField(max_length=10, null=True, default="yes, no,")

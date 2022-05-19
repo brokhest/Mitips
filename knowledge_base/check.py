@@ -74,7 +74,7 @@ def change_type(st_attribute, request):
     elif request.data.get("new type") == "char":
         attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values") + ",")
     elif request.data.get("new type") == "bool":
-        attribute = StBoolAttribute(name=request.data.get("name"), value=request.data.get("value") + ", ")
+        attribute = StBoolAttribute(name=request.data.get("name"))
     attribute.save()
     change_type_car(request.data.get("attr type"), request.data.get("new type"), name, attribute.name)
     return

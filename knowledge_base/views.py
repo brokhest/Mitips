@@ -140,7 +140,7 @@ class StAttributeAPI(APIView):
         elif type == "char":
             attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values")+",")
         elif type == "bool":
-            attribute = StBoolAttribute(name=request.data.get("name"), value=request.data.get("value")+", ")
+            attribute = StBoolAttribute(name=request.data.get("name"))
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         attribute.save()
