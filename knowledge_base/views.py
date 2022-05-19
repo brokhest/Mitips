@@ -114,10 +114,12 @@ class StAttributeAPI(APIView):
             }
             data.append(record)
         for atr in StCharAttribute.objects.all():
+            temp = atr.values
+            temp = temp.rstrip(',')
             record = {
                 "name": atr.name,
                 "type": "char",
-                "values": atr.values,
+                "values": temp,
             }
             data.append(record)
         for atr in StBoolAttribute.objects.all():
@@ -216,10 +218,12 @@ class AttributeAPI(APIView):
             }
             data.append(record)
         for atr in car_type.char_attrs.all():
+            temp = atr.values
+            temp = temp.rstrip(', ')
             record = {
                 "name": atr.name,
                 "type": "char",
-                "values": atr.values,
+                "values": temp,
             }
             data.append(record)
         for atr in car_type.bool_attrs.all():
