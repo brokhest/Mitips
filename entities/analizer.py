@@ -1,6 +1,7 @@
 from knowledge_base.models import CarType
 from .models import Entity
 
+
 class Score(object):
     total = 0
     passed = 0

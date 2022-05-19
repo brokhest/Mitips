@@ -34,7 +34,7 @@ def change_type_car(type, new_type, name, new_name):
             for attr in FloatAttribute.objects.filter(name=name):
                 car = attr.car_type
                 attr.delete()
-                car_attribute = BoolAttribute(name=new_name, value="", car_type=car)
+                car_attribute = BoolAttribute(name=new_name, car_type=car)
                 car_attribute.save()
     elif type == "char":
         if new_type == "float":
