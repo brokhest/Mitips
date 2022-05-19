@@ -3,16 +3,13 @@ from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from .models import CarType, CharAttribute, FloatAttribute, BoolAttribute,\
-    StBoolAttribute, StCharAttribute, StFloatAttribute, StAttribute
+    StBoolAttribute, StCharAttribute, StFloatAttribute
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from .check import *
 
 
 # Create your views here.
-
-def add_int_atr(request):
-    car_type = request.data.get("name")
 
 
 class Integrity(APIView):
@@ -150,6 +147,7 @@ class StAttributeAPI(APIView):
     @staticmethod
     def put(request, name):
         type = request.data.get("attr type")
+        changed = False
         if type == "float":
             attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
             if "new type" in request.data:
@@ -240,8 +238,11 @@ class AttributeAPI(APIView):
         if type == "float":
             attribute = FloatAttribute(name=request.data.get("name"), low_value=request.data.get("low value"),
                                        high_value=request.data.get("high value"), car_type=car_type)
-            result = check(get_object_or_404(StFloatAttribute.objects.all(), name=request.data.get("name")),
-                           attribute, "float")
+            if not "init" in request.data:
+                result = check(get_object_or_404(StFloatAttribute.objects.all(), name=request.data.get("name")),
+                               attribute, "float")
+            else:
+                result = True
         elif type == "char":
             attribute = CharAttribute(name=request.data.get("name"), values=request.data.get("values") + ", ", car_type=car_type)
             result = check(get_object_or_404(StCharAttribute.objects.all(), name=request.data.get("name")),
