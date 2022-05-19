@@ -26,6 +26,14 @@ class EntityAPI(APIView):
     def post(request):
         entity = Entity(name=request.data.get("name"), description=request.data.get("data"))
         data = analyze(entity)
+        if data == 0:
+            return Response(data={
+                "result": "no valid attributes given"
+            })
+        if data == 1:
+            return Response(data={
+                "result": "no matches"
+            })
         entity.save()
         return Response(data=data, status=status.HTTP_201_CREATED)
 
