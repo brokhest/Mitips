@@ -11,6 +11,42 @@ from .check import *
 
 
 # Create your views here.
+class AllInfo(APIView):
+
+    @staticmethod
+    def get(request):
+        data = {"attributes": [],
+                "car types": []
+                }
+        for attr in StAttribute.objects.all():
+            record = {
+                "name": attr.name
+            }
+            data["attributes"].append(record)
+        for car in CarType.objects.all():
+            car_info = {"name": car.name,
+                        "attributes": []
+                        }
+            for attr in FloatAttribute.objects.filter(car_type=car):
+                record = {
+                    "name": attr.name,
+                    "value": f"[{attr.low_value}-{attr.high_value}]"
+                }
+                car_info["attributes"].append(record)
+            for attr in CharAttribute.objects.filter(car_type=car):
+                record = {
+                    "name": attr.name,
+                    "value": attr.values.rstrip(", ")
+                }
+                car_info["attributes"].append(record)
+            for attr in BoolAttribute.objects.filter(car_type=car):
+                record = {
+                    "name": attr.name,
+                    "value": attr.value.rstrip(", ")
+                }
+                car_info["attributes"].append(record)
+            data["car types"].append(car_info)
+        return JsonResponse(data=data, safe=False)
 
 
 class Integrity(APIView):

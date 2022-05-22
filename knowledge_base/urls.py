@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CarTypeAPI, AttributeAPI, StAttributeAPI, Integrity
+from .views import CarTypeAPI, AttributeAPI, StAttributeAPI, Integrity, AllInfo
 
 
 urlpatterns = [
@@ -9,5 +9,6 @@ urlpatterns = [
     path('api/car_attributes/<str:name>', AttributeAPI.as_view()),
     path('api/attributes/', StAttributeAPI.as_view()),
     path('api/attributes/<str:name>', StAttributeAPI.as_view()),
-    path('api/integrity/', Integrity.as_view())
+    path('api/integrity/', Integrity.as_view()),
+    path('api/info/', AllInfo.as_view())
 ]
