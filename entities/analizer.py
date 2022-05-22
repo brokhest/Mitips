@@ -1,6 +1,8 @@
+from rest_framework.utils import json
+
 from knowledge_base.models import CarType
 from .models import Entity
-
+from knowledge_base.check import check_integrity
 
 class Score(object):
     total = 0
@@ -9,6 +11,8 @@ class Score(object):
 
 
 def analyze(entity):
+    if not len(check_integrity()) == 0:
+        return 2
     fit = []
     all_res = []
     for car_type in CarType.objects.all():
@@ -46,7 +50,7 @@ def analyze(entity):
         all_res.append(score)
     if len(all_res) == 0:
         return 0
-    name = deside(all_res)
+    name = decide(all_res)
     if name == 0:
         return 1
     entity.car_type = CarType.objects.get(name=name)
@@ -57,7 +61,7 @@ def analyze(entity):
     return fit
 
 
-def deside(results):
+def decide(results):
     for res in results:
         res.score = res.passed/res.total
     max = 0

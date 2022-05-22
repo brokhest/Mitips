@@ -17,61 +17,10 @@ class Integrity(APIView):
 
     @staticmethod
     def get(request):
-        data = []
-        for attr in StInitAttribute.objects.all():
-            record = {
-                "attribute": attr.name
-            }
-            data.append(record)
-        for attr in StBoolAttribute.objects.all():
-            if attr.value == ", " or attr.value == "":
-                record = {
-                    "attribute": attr.name
-                }
-                data.append(record)
-        for attr in StCharAttribute.objects.all():
-            if attr.values == "," or attr.values == "":
-                record = {
-                    "attribute": attr.name
-                }
-                data.append(record)
-        for attr in StFloatAttribute.objects.all():
-            if attr.low_value == attr.high_value == 0:
-                record = {
-                    "attribute": attr.name
-                }
-                data.append(record)
-        for car in CarType.objects.all():
-            if not (car.float_attrs.all().exists() + car.char_attrs.all().exists() + car.bool_attrs.all().exists()):
-                record = {
-                    "car type": car.name
-                }
-                data.append(record)
-            else:
-                for attr in car.float_attrs.all():
-                    if attr.low_value == attr.high_value == 0:
-                        record = {
-                            "car type": car.name,
-                            "attribute": attr.name
-                        }
-                        data.append(record)
-                for attr in car.bool_attrs.all():
-                    if attr.value == "," or attr.value == "":
-                        record = {
-                            "car type": car.name,
-                            "attribute": attr.name
-                        }
-                        data.append(record)
-                for attr in car.char_attrs.all():
-                    if attr.values == ", " or attr.values == "":
-                        record = {
-                            "car type": car.name,
-                            "attribute": attr.name
-                        }
-                        data.append(record)
+        data = check_integrity()
         if len(data) == 0:
             return Response(status=status.HTTP_200_OK)
-        return JsonResponse(data, safe=False)
+        return JsonResponse(data, safe=False, status=status.HTTP_200_OK)
 
 
 class CarTypeAPI(APIView):
@@ -135,10 +84,12 @@ class StAttributeAPI(APIView):
             }
             data.append(record)
         for atr in StBoolAttribute.objects.all():
+            temp = atr.value
+            temp = temp.rstrip(',')
             record = {
                 "name": atr.name,
                 "type": "bool",
-                "values": atr.value,
+                "values": temp,
             }
             data.append(record)
         return JsonResponse(data, safe=False)
@@ -296,8 +247,8 @@ class AttributeAPI(APIView):
         type = request.data.get("attr type")
         if type == "float":
             attribute = get_object_or_404(car_type.float_attrs.all(), name=name)
-            attribute.low_value = request.data.get("low value")
-            attribute.high_value = request.data.get("high value")
+            attribute.low_value = float(request.data.get("low value"))
+            attribute.high_value = float(request.data.get("high value"))
             result = check(get_object_or_404(StFloatAttribute.objects.all(), name=name),
                            attribute, "float")
         elif type == "char":

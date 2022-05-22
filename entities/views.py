@@ -34,6 +34,10 @@ class EntityAPI(APIView):
             return Response(data={
                 "result": "no matches"
             })
+        if data == 2:
+            return Response(data={
+                "result": "integrity is not kept"
+            })
         entity.save()
         return Response(data=data, status=status.HTTP_201_CREATED)
 

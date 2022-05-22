@@ -1,5 +1,68 @@
 from .models import StCharAttribute, StBoolAttribute, StFloatAttribute,\
-    FloatAttribute, CharAttribute, BoolAttribute, CarType
+    FloatAttribute, CharAttribute, BoolAttribute, CarType, StInitAttribute, StAttribute, Attribute
+
+
+def check_integrity():
+    data = []
+    for attr in StAttribute.objects.all():
+        if len(Attribute.objects.filter(name=attr.name)) == 0:
+            record = {
+                "attribute": attr.name,
+                "reason": "no classes"
+            }
+            data.append(record)
+    for attr in StInitAttribute.objects.all():
+        record = {
+            "attribute": attr.name
+        }
+        data.append(record)
+    for attr in StBoolAttribute.objects.all():
+        if attr.value == ", " or attr.value == "":
+            record = {
+                "attribute": attr.name
+            }
+            data.append(record)
+    for attr in StCharAttribute.objects.all():
+        if attr.values == "," or attr.values == "":
+            record = {
+                "attribute": attr.name
+            }
+            data.append(record)
+    for attr in StFloatAttribute.objects.all():
+        if attr.low_value == attr.high_value == 0:
+            record = {
+                "attribute": attr.name
+            }
+            data.append(record)
+    for car in CarType.objects.all():
+        if not (car.float_attrs.all().exists() + car.char_attrs.all().exists() + car.bool_attrs.all().exists()):
+            record = {
+                "car type": car.name
+            }
+            data.append(record)
+        else:
+            for attr in car.float_attrs.all():
+                if attr.low_value == attr.high_value == 0:
+                    record = {
+                        "car type": car.name,
+                        "attribute": attr.name
+                    }
+                    data.append(record)
+            for attr in car.bool_attrs.all():
+                if attr.value == ", " or attr.value == "":
+                    record = {
+                        "car type": car.name,
+                        "attribute": attr.name
+                    }
+                    data.append(record)
+            for attr in car.char_attrs.all():
+                if attr.values == ", " or attr.values == "":
+                    record = {
+                        "car type": car.name,
+                        "attribute": attr.name
+                    }
+                    data.append(record)
+    return data
 
 
 def check(st_attribute, attribute, type):
@@ -17,6 +80,7 @@ def check(st_attribute, attribute, type):
         values = attribute.value.split(", ")
         for value in values:
             value += ","
+            print(st_attribute.value.find(value))
             if st_attribute.value.find(value) == -1:
                 return 0
         return 1
