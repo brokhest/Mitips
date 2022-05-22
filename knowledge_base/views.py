@@ -1,9 +1,10 @@
+import django.db.utils
 from django.shortcuts import render
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from .models import CarType, CharAttribute, FloatAttribute, BoolAttribute,\
-    StBoolAttribute, StCharAttribute, StFloatAttribute
+    StBoolAttribute, StCharAttribute, StFloatAttribute, StInitAttribute
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
 from .check import *
@@ -17,6 +18,11 @@ class Integrity(APIView):
     @staticmethod
     def get(request):
         data = []
+        for attr in StInitAttribute.objects.all():
+            record = {
+                "attribute": attr.name
+            }
+            data.append(record)
         for attr in StBoolAttribute.objects.all():
             if attr.value == ", " or attr.value == "":
                 record = {
@@ -105,6 +111,12 @@ class StAttributeAPI(APIView):
     @staticmethod
     def get(request):
         data = []
+        for atr in StInitAttribute.objects.all():
+            record = {
+                "name": atr.name,
+                "type": "None",
+            }
+            data.append(record)
         for atr in StFloatAttribute.objects.all():
             record = {
                 "name": atr.name,
@@ -134,23 +146,36 @@ class StAttributeAPI(APIView):
     @staticmethod
     def post(request):
         type = request.data.get("attr type")
-        if type == "float":
-            attribute = StFloatAttribute(name=request.data.get("name"), low_value=float(request.data.get("low value")),
-                                         high_value=float(request.data.get("high value")))
-        elif type == "char":
-            attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values")+",")
-        elif type == "bool":
-            attribute = StBoolAttribute(name=request.data.get("name"))
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        attribute.save()
-        return Response(status=status.HTTP_201_CREATED)
+        try:
+            if type == "None":
+                attribute = StInitAttribute(name=request.data.get("name"))
+            elif type == "float":
+                attribute = StFloatAttribute(name=request.data.get("name"), low_value=float(request.data.get("low value")),
+                                             high_value=float(request.data.get("high value")))
+            elif type == "char":
+                attribute = StCharAttribute(name=request.data.get("name"), values=request.data.get("values")+",")
+            elif type == "bool":
+                attribute = StBoolAttribute(name=request.data.get("name"))
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            attribute.save()
+            return Response(status=status.HTTP_201_CREATED)
+        except django.db.utils.IntegrityError:
+            return Response(status=status.HTTP_409_CONFLICT)
+
 
     @staticmethod
     def put(request, name):
         type = request.data.get("attr type")
         changed = False
-        if type == "float":
+        if type == "None":
+            attribute = get_object_or_404(StInitAttribute.objects.all(), name=name)
+            if "new type" in request.data:
+                change_type(attribute, request)
+                changed = True
+            else:
+                attribute.name = request.data.get("name")
+        elif type == "float":
             attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
             if "new type" in request.data:
                 change_type(attribute, request)
@@ -190,7 +215,9 @@ class StAttributeAPI(APIView):
     @staticmethod
     def delete(request, name):
         type = request.data.get("attr type")
-        if type == "float":
+        if type == "None":
+            attribute = get_object_or_404(StInitAttribute.objects.all(), name=name)
+        elif type == "float":
             attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
         elif type == "char":
             attribute = get_object_or_404(StCharAttribute.objects.all(), name=name)

@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 
@@ -51,3 +52,9 @@ class StCharAttribute(StAttribute):
 
 class StBoolAttribute(StAttribute):
     value = models.CharField(max_length=10, null=True, default="yes, no,")
+
+
+class StInitAttribute(StAttribute):
+    class Meta:
+        verbose_name = u'Признак'
+        verbose_name_plural = u'Признаки'
