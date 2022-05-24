@@ -188,3 +188,8 @@ def change_bool(st_attribute, new_value):
         attribute.save()
 
 
+def delete_all(st_attribute):
+        for attr in Attribute.objects.filter(name=st_attribute.name):
+            attr.delete()
+        return
+

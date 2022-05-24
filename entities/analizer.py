@@ -4,6 +4,7 @@ from knowledge_base.models import CarType
 from .models import Entity
 from knowledge_base.check import check_integrity
 
+
 class Score(object):
     total = 0
     passed = 0
@@ -50,13 +51,13 @@ def analyze(entity):
         all_res.append(score)
     if len(all_res) == 0:
         return 0
-    name = decide(all_res)
-    if name == 0:
+    classes = decide(all_res)
+    if classes == 0:
         return 1
-    entity.car_type = CarType.objects.get(name=name)
+    # entity.car_type = CarType.objects.get(name=)
     fit = {
         "results": fit,
-        "car type": name
+        "car type": classes
     }
     return fit
 
@@ -64,16 +65,17 @@ def analyze(entity):
 def decide(results):
     for res in results:
         res.score = res.passed/res.total
-    max = 0
     num = -1
-    total = 0
+    classes = []
     for res in results:
-        if res.score == 1 and res.total > total:
-            max = res.score
-            total = res.total
-            num = results.index(res)
-
-    if num >= 0:
-        return results[num].name
+        if res.score == 1:
+            # max = res.score
+            # total = res.total
+            record = {
+                "name": res.name
+            }
+            classes.append(record)
+    if not len(classes) == 0:
+        return classes
     else:
         return 0

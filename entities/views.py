@@ -24,7 +24,8 @@ class EntityAPI(APIView):
 
     @staticmethod
     def post(request):
-        entity = Entity(name=request.data.get("name"), description=request.data.get("data"))
+        # entity = Entity(name=request.data.get("name"), description=request.data.get("data"))
+        entity = Entity(description=request.data)
         data = analyze(entity)
         if data == 0:
             return Response(data={

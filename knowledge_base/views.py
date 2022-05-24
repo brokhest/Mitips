@@ -150,7 +150,6 @@ class StAttributeAPI(APIView):
         except django.db.utils.IntegrityError:
             return Response(status=status.HTTP_409_CONFLICT)
 
-
     @staticmethod
     def put(request, name):
         type = request.data.get("attr type")
@@ -170,7 +169,7 @@ class StAttributeAPI(APIView):
             else:
                 change_name(attribute, type, request.data.get("name"))
                 attribute.name = request.data.get("name")
-                change_float(attribute, request.data.get("low value"), request.data.get("high value"))
+                change_float(attribute, float(request.data.get("low value")), float(request.data.get("high value")))
                 attribute.low_value = request.data.get("low value")
                 attribute.high_value = request.data.get("high value")
         elif type == "char":
@@ -204,14 +203,12 @@ class StAttributeAPI(APIView):
         type = request.data.get("attr type")
         if type == "None":
             attribute = get_object_or_404(StInitAttribute.objects.all(), name=name)
-        elif type == "float":
-            attribute = get_object_or_404(StFloatAttribute.objects.all(), name=name)
-        elif type == "char":
-            attribute = get_object_or_404(StCharAttribute.objects.all(), name=name)
-        elif type == "bool":
-            attribute = get_object_or_404(StBoolAttribute.objects.all(), name=name)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            attribute = get_object_or_404(StAttribute.objects.all(), name=name)
+            delete_all(attribute)
+        # else:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
+
         attribute.delete()
         return Response(status=status.HTTP_200_OK)
 
